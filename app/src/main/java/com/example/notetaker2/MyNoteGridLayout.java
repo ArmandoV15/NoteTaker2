@@ -43,6 +43,11 @@ public class MyNoteGridLayout extends GridLayout {
         types[1] = "SCHOOL";
         types[2] = "WORK";
         types[3] = "OTHER";
+
+        /**
+         This arrayAdapter allows us to add images to our spinner in the second activity, we need to
+         override both getView, and getDropDownView.
+         */
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, android.R.layout.activity_list_item, android.R.id.text1, types) {
             @NonNull
             @Override
@@ -93,6 +98,7 @@ public class MyNoteGridLayout extends GridLayout {
                 return view;
             }
         };
+        //Setting the adapter to our spinner
         typeSpinner.setAdapter(arrayAdapter);
         GridLayout.Spec rowSpec2 = GridLayout.spec(0, 1, 1/2);
         GridLayout.Spec colSpec2 = GridLayout.spec(1, 1, 1);

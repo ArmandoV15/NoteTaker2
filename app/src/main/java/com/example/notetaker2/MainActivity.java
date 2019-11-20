@@ -1,7 +1,9 @@
 
 /**
  * This program expands on PA6 adding in new functionality which include persistent data
- * storage using a SQLite database, new action menus which allow the user to add delete
+ * storage using a SQLite database, new action menus which allow the user to add notes, delete all notes, and
+ * delete specific notes. We are also not displaying directly to a listView, we are storing all notes in a database
+ * then using an adapter to display them to a listView.
  *
  * CPSC 312-01, Fall 2019
  * Programming Assignment #7
@@ -57,7 +59,14 @@ public class MainActivity extends AppCompatActivity {
 
     private SimpleCursorAdapter cursorAdapter;
 
-
+    /**
+     This onActivityResult allows the program to get the results from my second activity when the user presses the "Done" button.
+     It also differentiates between a new note and an edited note which prevents a new note showing up in the programs ListView if it was edited.
+     Otherwise if a new note was created it will create a new note and add it to the ListView
+     * @param requestCode Used to hold and check the requestCode and check it is equals LOGIN_REQUEST_CODE
+     * @param resultCode code returned by the second activity to validate the results before sending results back
+     * @param data our call to Intent when the program wants to get anything the second activity put into putExtra
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -82,6 +91,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     This method allows for the add and delete button to show up in the menu bar of our app.
+     * @param menu Reference to our option menu we created in our XML files
+     * @return Displays the option menu
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
@@ -89,6 +103,15 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    /**
+     This method allows us to assign functionality to our add new note and delete buttons in our
+     option menu. When the plus sign is pressed it passes and empty title, type, and content to the second activity which represents the new note.
+     There is also an index being passed which is used to distinguish this as a new note.
+     If the trashcan is pressed then then an alert dialogue is show prompting the user if they are sure
+     they want to delete all their notes.
+     * @param item Represents the button being pressed
+     * @return Action being conducted
+     */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
@@ -124,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -137,6 +161,9 @@ public class MainActivity extends AppCompatActivity {
         final NoteOpenHelper openHelper = new NoteOpenHelper(this);
         Cursor cursor = openHelper.getSelectAllNotesCursor();
 
+        /**
+         Creating a new cursor adapter to be able to update our list view when we create or update a note.
+         */
         cursorAdapter = new SimpleCursorAdapter(this,
                 android.R.layout.simple_list_item_activated_1,
                 cursor,
@@ -146,12 +173,19 @@ public class MainActivity extends AppCompatActivity {
 
         listView.setAdapter(cursorAdapter);
 
+        /**
+         This setChoiceMode and setMultipleChoiceListener allow the user to highlight certain notes
+         and delete those highlighted notes when the user longCLicks on one. The onActionItemChecked method
+         deletes all the selected notes.
+         The onCreateActionMode method switches the display to the cam_menu display when a note is
+         long clicked.
+         */
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         listView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
-            int selected;
+
             @Override
             public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
-                selected++;
+
             }
 
             @Override
@@ -192,6 +226,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         This setOnItemClickListener is used to tell when a note in the ListView is being clicked.
+         When the note is clicked, its title, type, and contents are sent to the second activity and are able to be edited.
+         The notes index is also sent over to distinguish it as a note that is being edited.
+         */
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long l) {
