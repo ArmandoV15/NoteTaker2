@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="id" name="newNote"/>
+    <item type="id" name="editTitle"/>
+    <item type="id" name="typeSpinner"/>
+    <item type="id" name="editContent"/>
+    <item type="id" name="doneButton"/>
+    <item type="id" name="listView"/>
+</resources>
