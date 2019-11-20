@@ -16,8 +16,6 @@
  * @version v1.0 11/19/19
  */
 
-
-
 package com.example.notetaker2;
 
 import androidx.annotation.NonNull;
@@ -44,6 +42,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
@@ -182,10 +181,12 @@ public class MainActivity extends AppCompatActivity {
          */
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         listView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
-
+         int selected;
+         EditText select = findViewById(R.id.text);
             @Override
             public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
-
+                selected = listView.getCheckedItemCount();
+                mode.setTitle(selected + " selected");
             }
 
             @Override
